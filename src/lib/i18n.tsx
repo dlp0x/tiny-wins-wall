@@ -22,7 +22,7 @@ const dict: Record<Lang, Strings> = {
     since: (d: string) => `Since ${d}`,
     headlineSuffix: "little wins",
     intro:
-      "Small, quiet victories from people who wanted to say so. No names. No counts. Just the day, made a little softer.",
+      "Small, quiet victories, left here anonymously.",
     cta: "+ My little win",
     modalEyebrow: "Your little win",
     modalTitle: "What made today a little softer?",
@@ -37,7 +37,7 @@ const dict: Record<Lang, Strings> = {
     since: (d: string) => `Depuis le ${d}`,
     headlineSuffix: "petites victoires",
     intro:
-      "De petites victoires tranquilles, partagées par ceux qui avaient envie de le dire. Pas de noms. Pas de compteurs. Juste la journée, un peu plus douce.",
+      "De petites victoires tranquilles, déposées ici anonymement.",
     cta: "+ Ma petite victoire",
     modalEyebrow: "Votre petite victoire",
     modalTitle: "Qu'est-ce qui a adouci votre journée ?",
