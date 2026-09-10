@@ -57,7 +57,7 @@ function Slip({ win, index }: { win: Win; index: number }) {
   const { lang, t } = useI18n();
   return (
     <li
-      className="slip animate-rise relative p-5 pt-6"
+      className="slip animate-rise relative mb-5 break-inside-avoid p-5 pt-6"
       style={{ animationDelay: `${Math.min(index, 15) * 60}ms` }}
     >
       <span className="pin-dot" aria-hidden="true" />
@@ -178,7 +178,7 @@ function LittleWins() {
         </section>
 
         <section className="pb-28">
-          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="columns-1 gap-5 sm:columns-2 lg:columns-3">
             {wins.map((win, i) => (
               <Slip key={win.id} win={win} index={i} />
             ))}
