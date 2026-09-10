@@ -2,7 +2,22 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 
 export type Lang = "en" | "fr";
 
-const dict = {
+type Strings = {
+  since: (d: string) => string;
+  headlineSuffix: string;
+  intro: string;
+  cta: string;
+  modalEyebrow: string;
+  modalTitle: string;
+  placeholder: string;
+  anonymous: string;
+  cancel: string;
+  submit: string;
+  footer: string;
+  ago: (m: number) => string;
+};
+
+const dict: Record<Lang, Strings> = {
   en: {
     since: (d: string) => `Since ${d}`,
     headlineSuffix: "little wins",
@@ -33,14 +48,14 @@ const dict = {
     footer: "fait tranquillement · anonyme par nature",
     ago: (m: number) => (m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`),
   },
-} as const;
+};
 
 export const startDateLabel = {
   en: "March 16, 2026",
   fr: "16 mars 2026",
 } as const;
 
-type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: (typeof dict)["en"] };
+type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: Strings };
 
 const I18nContext = createContext<Ctx | null>(null);
 
