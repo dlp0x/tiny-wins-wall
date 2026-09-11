@@ -55,11 +55,14 @@
   --color-ink: var(--ink);
   --color-line: var(--line);
   --color-accent-ink: var(--accent-ink);
-  --font-display: "Fraunces", Georgia, serif;
+  --color-tint-sky: var(--tint-sky);
+  --color-tint-rose: var(--tint-rose);
+  --color-tint-sage: var(--tint-sage);
+  --font-display: "Instrument Serif", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --animate-rise: rise 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
-  --animate-pop: pop 0.5s cubic-bezier(0.32, 0.72, 0, 1) both;
+  --font-mono: "Inter", system-ui, sans-serif;
+  --animate-rise: rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pop: pop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -106,30 +109,33 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 
   /* littlewins palette */
-  --radius: 7px;
-  --background: oklch(0.958 0.021 85);
-  --foreground: oklch(0.245 0.013 62);
-  --surface: oklch(0.983 0.012 85);
-  --ink: oklch(0.245 0.013 62);
-  --muted: oklch(0.958 0.021 85);
-  --muted-foreground: oklch(0.505 0.014 65);
-  --line: oklch(0.245 0.013 62 / 0.1);
-  --accent: oklch(0.63 0.16 42);
-  --accent-foreground: oklch(0.99 0.005 85);
-  --accent-ink: oklch(0.45 0.14 42);
-  --primary: oklch(0.63 0.16 42);
-  --primary-foreground: oklch(0.99 0.005 85);
-  --card: oklch(0.983 0.012 85);
-  --card-foreground: oklch(0.245 0.013 62);
-  --popover: oklch(0.983 0.012 85);
-  --popover-foreground: oklch(0.245 0.013 62);
-  --border: oklch(0.245 0.013 62 / 0.1);
-  --input: oklch(0.245 0.013 62 / 0.12);
-  --ring: oklch(0.63 0.16 42);
+  --radius: 2px;
+  --background: oklch(0.992 0.004 88);
+  --foreground: oklch(0.22 0.008 70);
+  --surface: oklch(0.998 0.002 88);
+  --ink: oklch(0.22 0.008 70);
+  --muted: oklch(0.965 0.006 88);
+  --muted-foreground: oklch(0.53 0.01 70);
+  --line: oklch(0.22 0.008 70 / 0.12);
+  --accent: oklch(0.34 0.015 70);
+  --accent-foreground: oklch(0.992 0.004 88);
+  --accent-ink: oklch(0.3 0.012 70);
+  --primary: oklch(0.28 0.012 70);
+  --primary-foreground: oklch(0.992 0.004 88);
+  --card: oklch(0.998 0.002 88);
+  --card-foreground: oklch(0.22 0.008 70);
+  --popover: oklch(0.998 0.002 88);
+  --popover-foreground: oklch(0.22 0.008 70);
+  --border: oklch(0.22 0.008 70 / 0.12);
+  --input: oklch(0.22 0.008 70 / 0.14);
+  --ring: oklch(0.44 0.02 70);
+  --tint-sky: oklch(0.965 0.014 230);
+  --tint-rose: oklch(0.968 0.014 15);
+  --tint-sage: oklch(0.966 0.014 145);
 }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }
 }
 
@@ -138,36 +144,29 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-@utility slip {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  box-shadow:
-    0 1px 0 oklch(0.245 0.013 62 / 0.035),
-    0 7px 18px -15px oklch(0.245 0.013 62 / 0.2);
-  transition:
-    transform 0.25s cubic-bezier(0.32, 0.72, 0, 1),
-    box-shadow 0.25s cubic-bezier(0.32, 0.72, 0, 1);
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow:
-      0 1px 0 oklch(0.245 0.013 62 / 0.04),
-      0 10px 22px -16px oklch(0.245 0.013 62 / 0.24);
-  }
+@utility wall-entry {
+  transition: background-color 0.45s ease, color 0.45s ease;
 }
 
-@utility pin-dot {
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  border-radius: 9999px;
-  transform: translateX(-50%);
-  background: var(--accent);
-  opacity: 0.78;
-  box-shadow: 0 1px 1px oklch(0.45 0.14 42 / 0.25);
+@utility delay-1 { animation-delay: 55ms; }
+@utility delay-2 { animation-delay: 110ms; }
+@utility delay-3 { animation-delay: 165ms; }
+@utility delay-4 { animation-delay: 220ms; }
+@utility delay-5 { animation-delay: 275ms; }
+
+@utility win-tint-sky {
+  background: var(--tint-sky);
+  &:hover { background: color-mix(in oklab, var(--tint-sky) 65%, var(--surface)); }
+}
+
+@utility win-tint-rose {
+  background: var(--tint-rose);
+  &:hover { background: color-mix(in oklab, var(--tint-rose) 65%, var(--surface)); }
+}
+
+@utility win-tint-sage {
+  background: var(--tint-sage);
+  &:hover { background: color-mix(in oklab, var(--tint-sage) 65%, var(--surface)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
