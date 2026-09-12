@@ -132,6 +132,23 @@
   --tint-sky: oklch(0.965 0.014 230);
   --tint-rose: oklch(0.968 0.014 15);
   --tint-sage: oklch(0.966 0.014 145);
+  --overlay: oklch(0.22 0.008 70 / 0.22);
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+@utility wall-overlay {
+  background: var(--overlay);
 }
 
 @keyframes rise {
