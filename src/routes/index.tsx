@@ -9,6 +9,7 @@ import {
   type Lang,
 } from "@/lib/i18n";
 import { BASE_COUNT, mockWins, type Win } from "@/lib/wins";
+import { ThemeProvider, useTheme } from "@/lib/theme";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,23 +31,26 @@ export const Route = createFileRoute("/")({
     ],
   }),
   component: () => (
-    <I18nProvider>
-      <LittleWins />
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <LittleWins />
+      </I18nProvider>
+    </ThemeProvider>
   ),
 });
 
 function LangSwitch() {
   const { lang, setLang } = useI18n();
   const item = (value: Lang) =>
-    `h-7 min-w-8 rounded-none px-2 text-[10px] font-medium ${
-      lang === value ? "bg-ink text-background hover:bg-ink" : "text-muted-foreground hover:bg-muted"
+    `h-6 min-w-7 rounded-none px-1.5 text-[10px] font-medium transition-colors focus-visible:ring-1 focus-visible:ring-ring ${
+      lang === value ? "text-ink hover:bg-muted" : "text-muted-foreground/70 hover:bg-muted hover:text-ink"
     }`;
   return (
-    <div className="inline-flex shrink-0 border border-line p-0.5" aria-label="Language">
+    <div className="inline-flex shrink-0 items-center" aria-label="Language">
       <Button variant="ghost" type="button" onClick={() => setLang("en")} className={item("en")} aria-pressed={lang === "en"}>
         EN
       </Button>
+      <span aria-hidden className="text-[10px] text-muted-foreground/40">/</span>
       <Button variant="ghost" type="button" onClick={() => setLang("fr")} className={item("fr")} aria-pressed={lang === "fr"}>
         FR
       </Button>
@@ -104,7 +108,7 @@ function SubmitDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-ink/20 p-5 backdrop-blur-sm"
+      className="fixed inset-0 z-50 grid place-items-center wall-overlay p-5 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
@@ -153,6 +157,24 @@ function SubmitDialog({
   );
 }
 
+function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+  const { t } = useI18n();
+  const label = theme === "dark" ? t.themeToLight : t.themeToDark;
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      onClick={toggle}
+      title={label}
+      aria-label={label}
+      className="h-6 rounded-none px-1.5 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:bg-muted hover:text-ink focus-visible:ring-1 focus-visible:ring-ring"
+    >
+      {theme === "dark" ? "day" : "night"}
+    </Button>
+  );
+}
+
 function LittleWins() {
   const { lang, t } = useI18n();
   const [wins, setWins] = useState<Win[]>(mockWins);
@@ -174,16 +196,13 @@ function LittleWins() {
       <header>
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-5 sm:px-8 sm:py-7 lg:px-10">
           <div className="font-display text-2xl italic">littlewins</div>
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <LangSwitch />
-            <Button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="h-8 rounded-none bg-transparent px-2 text-xs font-medium text-ink shadow-none hover:bg-muted sm:px-3 sm:text-sm"
-            >
-              {t.cta}
-            </Button>
-          </div>
+          <Button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="hidden h-8 rounded-none bg-transparent px-3 text-sm font-medium text-ink shadow-none transition-colors hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring sm:inline-flex"
+          >
+            {t.cta}
+          </Button>
         </div>
       </header>
 
@@ -207,11 +226,23 @@ function LittleWins() {
         </section>
       </main>
 
-      <footer>
-        <div className="mx-auto max-w-7xl px-5 py-9 text-center text-muted-foreground sm:px-8 lg:px-10">
-          <p className="text-[10px]">{t.footer}</p>
+      <footer className="pb-24 sm:pb-10">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-5 py-8 sm:px-8 lg:px-10">
+          <div className="flex items-center gap-3">
+            <LangSwitch />
+            <ThemeToggle />
+          </div>
+          <p className="text-[10px] text-muted-foreground">{t.footer}</p>
         </div>
       </footer>
+
+      <Button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="fixed bottom-5 right-5 z-40 h-9 rounded-none border border-line bg-surface px-3.5 text-xs font-medium text-ink shadow-none transition-colors hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring sm:hidden"
+      >
+        {t.cta}
+      </Button>
 
       <SubmitDialog open={open} onClose={() => setOpen(false)} onSubmit={addWin} />
     </div>
