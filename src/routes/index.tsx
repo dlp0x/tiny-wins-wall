@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { I18nProvider, formatCount, startDateLabel, useI18n, type Lang } from "@/lib/i18n";
-import { BASE_COUNT, START_DATE } from "@/lib/wins";
+import { BASE_COUNT } from "@/lib/wins";
 import { createWin, fetchWins, type DbWin } from "@/lib/wins-api";
 import { ThemeProvider, useTheme } from "@/lib/theme";
 
