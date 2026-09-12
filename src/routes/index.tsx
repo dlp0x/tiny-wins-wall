@@ -239,7 +239,7 @@ function LittleWins() {
       <Button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-40 h-9 rounded-none border border-line bg-surface px-3.5 text-xs font-medium text-ink shadow-none transition-colors hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring sm:hidden"
+        className="fixed bottom-5 right-5 z-40 h-14 rounded-full border border-line bg-ink px-6 text-base font-medium text-background shadow-lg transition-transform hover:scale-[1.02] hover:bg-accent-ink focus-visible:ring-2 focus-visible:ring-ring sm:hidden"
       >
         {t.cta}
       </Button>
