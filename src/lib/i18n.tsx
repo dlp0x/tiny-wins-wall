@@ -49,7 +49,7 @@ const dict: Record<Lang, Strings> = {
     anonymous: "publié anonymement",
     cancel: "Annuler",
     submit: "Épingler",
-    footer: "fait tranquillement · anonyme par nature",
+    footer: "fait tranquillement par dlp0x · anonyme par nature",
     themeToDark: "Passer en nuit",
     themeToLight: "Passer en jour",
     ago: (m: number) => (m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`),

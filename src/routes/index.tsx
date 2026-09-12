@@ -1,13 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  I18nProvider,
-  formatCount,
-  startDateLabel,
-  useI18n,
-  type Lang,
-} from "@/lib/i18n";
+import { I18nProvider, formatCount, startDateLabel, useI18n, type Lang } from "@/lib/i18n";
 import { BASE_COUNT, mockWins, type Win } from "@/lib/wins";
 import { ThemeProvider, useTheme } from "@/lib/theme";
 
