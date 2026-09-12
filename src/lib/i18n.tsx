@@ -14,6 +14,8 @@ type Strings = {
   cancel: string;
   submit: string;
   footer: string;
+  themeToDark: string;
+  themeToLight: string;
   ago: (m: number) => string;
 };
 
@@ -31,6 +33,8 @@ const dict: Record<Lang, Strings> = {
     cancel: "Cancel",
     submit: "Pin it",
     footer: "made quietly · anonymous by design",
+    themeToDark: "Switch to night",
+    themeToLight: "Switch to day",
     ago: (m: number) => (m < 60 ? `${m}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`),
   },
   fr: {
@@ -46,6 +50,8 @@ const dict: Record<Lang, Strings> = {
     cancel: "Annuler",
     submit: "Épingler",
     footer: "fait tranquillement · anonyme par nature",
+    themeToDark: "Passer en nuit",
+    themeToLight: "Passer en jour",
     ago: (m: number) => (m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`),
   },
 };
