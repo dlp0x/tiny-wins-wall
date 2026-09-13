@@ -116,6 +116,7 @@ function LittleWins() {
 
   useEffect(() => {
     let active = true;
+    setLoading(true);
     fetchWins(lang)
       .then((data) => {
         if (active) {
@@ -150,7 +151,18 @@ function LittleWins() {
         </section>
 
         <section className="pb-20 sm:pb-28">
-          {loading ? <p className="py-10 text-sm text-muted-foreground">…</p> : error ? <p className="py-10 text-sm text-muted-foreground">{error}</p> : <ul className="columns-1 gap-7 sm:columns-2 sm:gap-10 lg:columns-3 lg:gap-12">{wins.map((win, i) => <Slip key={win.id} win={win} index={i} />)}</ul>}
+          {loading ? (
+            <p className="py-10 text-sm text-muted-foreground">…</p>
+          ) : error ? (
+            <p className="py-10 text-sm text-muted-foreground">{error}</p>
+          ) : wins.length === 0 ? (
+            <div className="flex min-h-[36vh] flex-col items-center justify-center py-16 text-center">
+              <p className="max-w-[22ch] text-balance font-display text-3xl leading-tight sm:text-4xl">{t.emptyWall}</p>
+              <p className="mt-4 text-sm text-muted-foreground">{t.emptyWallCta}</p>
+            </div>
+          ) : (
+            <ul className="columns-1 gap-7 sm:columns-2 sm:gap-10 lg:columns-3 lg:gap-12">{wins.map((win, i) => <Slip key={win.id} win={win} index={i} />)}</ul>
+          )}
         </section>
       </main>
 
