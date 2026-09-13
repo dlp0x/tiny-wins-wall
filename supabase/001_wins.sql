@@ -52,6 +52,16 @@ select * from (values
   ('Finished the chapter I kept putting off.', 'en', 'published', now(), now() - interval '24 hours'),
   ('Watered the plant and remembered its name.', 'en', 'published', now(), now() - interval '48 hours'),
   ('Bought the flowers on purpose, for me.', 'en', 'published', now(), now() - interval '52 hours'),
-  ('Didn''t check my phone for the first full hour of the day.', 'en', 'published', now(), now() - interval '72 hours')
+  ('Didn''t check my phone for the first full hour of the day.', 'en', 'published', now(), now() - interval '72 hours'),
+  ('J''ai enfin répondu à ce courriel que je repoussais depuis des semaines.', 'fr', 'published', now(), now() - interval '1 hour'),
+  ('J''ai pris une vraie pause sans culpabiliser.', 'fr', 'published', now(), now() - interval '4 hours'),
+  ('J''ai marché un peu plus longtemps juste parce que la soirée était belle.', 'fr', 'published', now(), now() - interval '7 hours'),
+  ('J''ai rangé un coin qui me dérangeait depuis trop longtemps.', 'fr', 'published', now(), now() - interval '10 hours'),
+  ('J''ai appelé quelqu''un que je n''avais pas pris le temps de contacter.', 'fr', 'published', now(), now() - interval '16 hours'),
+  ('J''ai dit non sans avoir besoin de me justifier.', 'fr', 'published', now(), now() - interval '20 hours'),
+  ('J''ai terminé quelque chose que je repoussais depuis longtemps.', 'fr', 'published', now(), now() - interval '30 hours'),
+  ('J''ai acheté les fleurs juste parce qu''elles me faisaient sourire.', 'fr', 'published', now(), now() - interval '44 hours'),
+  ('J''ai pris le temps de regarder le ciel au lieu de regarder mon téléphone.', 'fr', 'published', now(), now() - interval '60 hours'),
+  ('Aujourd''hui, je me suis couché un peu plus fier de moi qu''hier.', 'fr', 'published', now(), now() - interval '84 hours')
 ) as seed(content, language, status, published_at, created_at)
-where not exists (select 1 from public.wins);
+where not exists (select 1 from public.wins where language = 'fr');

@@ -254,17 +254,8 @@ function LittleWins() {
 
       <main className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <section className="pb-10 pt-8 sm:pb-14 sm:pt-11 lg:pb-16 lg:pt-14">
-          <h1 className="animate-rise max-w-3xl text-balance font-display text-[2.15rem] leading-[1.12] sm:text-[2.8rem] lg:text-[3.35rem]">
-            <span>
-              {count} {t.headlineSuffix}
-            </span>{" "}
-            <span className="text-muted-foreground">
-              {t.since(startDateLabel[lang]).toLowerCase()}
-            </span>
-          </h1>
-          <p className="animate-rise delay-2 mt-4 max-w-[38ch] text-pretty text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-            {t.intro}
-          </p>
+          <h1 className="animate-rise max-w-3xl text-balance font-display text-[2.15rem] leading-[1.12] sm:text-[2.8rem] lg:max-w-none lg:whitespace-nowrap lg:text-[3.35rem]"><span>{count} {t.headlineSuffix}</span>{" "}<span className="text-muted-foreground">{t.since(startDateLabel[lang]).toLowerCase()}</span></h1>
+          <p className="animate-rise delay-2 mt-4 max-w-[38ch] text-pretty text-sm leading-relaxed text-muted-foreground sm:text-[15px]">{t.intro}</p>
         </section>
 
         <section className="pb-20 sm:pb-28">
