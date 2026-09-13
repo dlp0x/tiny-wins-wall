@@ -307,9 +307,13 @@ function LittleWins() {
 
         <section className="pb-20 sm:pb-28">
           {loading ? (
-            <p className="py-10 text-sm text-muted-foreground">…</p>
-          ) : error ? (
-            <p className="py-10 text-sm text-muted-foreground">{error}</p>
+            <p className="py-10 text-sm text-muted-foreground" role="status">
+              {t.loading}
+            </p>
+          ) : failedToLoad ? (
+            <p className="py-10 text-sm text-muted-foreground" role="status">
+              {t.loadError}
+            </p>
           ) : wins.length === 0 ? (
             <div className="flex min-h-[36vh] flex-col items-center justify-center py-16 text-center">
               <p className="max-w-[22ch] text-balance font-display text-3xl leading-tight sm:text-4xl">
