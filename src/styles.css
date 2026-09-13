@@ -129,9 +129,9 @@
   --border: oklch(0.22 0.008 70 / 0.12);
   --input: oklch(0.22 0.008 70 / 0.14);
   --ring: oklch(0.44 0.02 70);
-  --tint-sky: var(--surface);
---tint-rose: var(--surface);
---tint-sage: var(--surface);
+  --tint-sky: oklch(0.965 0.014 230);
+  --tint-rose: oklch(0.968 0.014 15);
+  --tint-sage: oklch(0.966 0.014 145);
   --overlay: oklch(0.22 0.008 70 / 0.22);
 }
 
@@ -242,9 +242,9 @@ body {
   --border: oklch(0.92 0.006 85 / 0.12);
   --input: oklch(0.92 0.006 85 / 0.16);
   --ring: oklch(0.7 0.01 80);
-  --tint-sky: var(--surface);
---tint-rose: var(--surface);
---tint-sage: var(--surface);
+  --tint-sky: oklch(0.275 0.022 230);
+  --tint-rose: oklch(0.278 0.022 15);
+  --tint-sage: oklch(0.272 0.022 145);
   --overlay: oklch(0.12 0.006 75 / 0.55);
 }
 
