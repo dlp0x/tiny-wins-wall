@@ -53,12 +53,12 @@ function LangSwitch() {
 }
 
 const winTreatments = [
-  "win-tint-sky px-6 py-8 sm:px-8 sm:py-10",
-  "px-2 py-6 sm:px-4 sm:py-9",
-  "win-tint-rose px-6 py-7 sm:px-8 sm:py-9",
-  "px-3 py-8 text-center sm:px-6 sm:py-12",
-  "win-tint-sage px-6 py-8 sm:px-8 sm:py-10",
-  "px-2 py-7 sm:px-5 sm:py-10",
+  "win-tint-overlay px-6 py-8 sm:px-8 sm:py-10",
+  "win-tint-overlay px-2 py-6 sm:px-4 sm:py-9",
+  "win-tint-overlay px-6 py-7 sm:px-8 sm:py-9",
+  "win-tint-overlay px-3 py-8 text-center sm:px-6 sm:py-12",
+  "win-tint-overlay px-6 py-8 sm:px-8 sm:py-10",
+  "win-tint-overlay px-2 py-7 sm:px-5 sm:py-10",
 ] as const;
 
 const winType = [
