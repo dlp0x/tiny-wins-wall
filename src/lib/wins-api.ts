@@ -19,7 +19,19 @@ export async function fetchWins(language: "en" | "fr"): Promise<DbWin[]> {
   return data ?? [];
 }
 
-export async function createWin(content: string, language: "en" | "fr"): Promise<DbWin> {
+export const MAX_WIN_LENGTH = 200;
+
+/** A win must have real content: at least one letter or digit, within the length limit. */
+export function isValidWin(raw: string): boolean {
+  const content = raw.trim();
+  if (content.length === 0 || content.length > MAX_WIN_LENGTH) return false;
+  return /[\p{L}\p{N}]/u.test(content);
+}
+
+export async function createWin(raw: string, language: "en" | "fr"): Promise<DbWin> {
+  const content = raw.trim();
+  if (!isValidWin(content)) throw new Error("invalid_win");
+
   const { data, error } = await supabase
     .from("wins")
     .insert({ content, language, status: "published" })
