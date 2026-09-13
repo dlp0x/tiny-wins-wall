@@ -7,11 +7,12 @@ export type DbWin = {
   created_at: string;
 };
 
-export async function fetchWins(): Promise<DbWin[]> {
+export async function fetchWins(language: "en" | "fr"): Promise<DbWin[]> {
   const { data, error } = await supabase
     .from("wins")
     .select("id, content, language, created_at")
     .eq("status", "published")
+    .eq("language", language)
     .order("created_at", { ascending: false });
 
   if (error) throw error;

@@ -116,12 +116,20 @@ function LittleWins() {
 
   useEffect(() => {
     let active = true;
-    fetchWins()
-      .then((data) => { if (active) { setWins(data); setError(null); } })
-      .catch((err) => { console.error("littlewins: unable to load wins", err); if (active) setError("Unable to load the wall right now."); })
+    fetchWins(lang)
+      .then((data) => {
+        if (active) {
+          setWins(data);
+          setError(null);
+        }
+      })
+      .catch((err) => {
+        console.error("littlewins: unable to load wins", err);
+        if (active) setError("Unable to load the wall right now.");
+      })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, []);
+  }, [lang]);
 
   const count = useMemo(() => formatCount(BASE_COUNT + wins.length, lang), [wins.length, lang]);
 
