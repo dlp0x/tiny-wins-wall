@@ -16,6 +16,8 @@ type Strings = {
   footer: string;
   themeToDark: string;
   themeToLight: string;
+  emptyWall: string;
+  emptyWallCta: string;
   ago: (m: number) => string;
 };
 
@@ -23,8 +25,7 @@ const dict: Record<Lang, Strings> = {
   en: {
     since: (d: string) => `Since ${d}`,
     headlineSuffix: "little wins",
-    intro:
-      "Small, quiet victories, left here anonymously.",
+    intro: "Small, quiet victories, left here anonymously.",
     cta: "+ add my little win",
     modalEyebrow: "Your little win",
     modalTitle: "What made today a little softer?",
@@ -35,13 +36,14 @@ const dict: Record<Lang, Strings> = {
     footer: "made quietly by dlp0x · anonymous by design",
     themeToDark: "Switch to night",
     themeToLight: "Switch to day",
+    emptyWall: "Every wall starts somewhere.",
+    emptyWallCta: "Add your little win.",
     ago: (m: number) => (m < 60 ? `${m}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`),
   },
   fr: {
     since: (d: string) => `Depuis le ${d}`,
     headlineSuffix: "petites victoires",
-    intro:
-      "De petites victoires tranquilles, déposées ici anonymement.",
+    intro: "De petites victoires tranquilles, déposées ici anonymement.",
     cta: "+ Ajouter ma petite victoire",
     modalEyebrow: "Votre petite victoire",
     modalTitle: "Qu'est-ce qui a adouci votre journée ?",
@@ -52,6 +54,8 @@ const dict: Record<Lang, Strings> = {
     footer: "fait tranquillement par dlp0x · anonyme par nature",
     themeToDark: "Passer en nuit",
     themeToLight: "Passer en jour",
+    emptyWall: "Même les murs commencent quelque part.",
+    emptyWallCta: "Ajoutez votre petite victoire.",
     ago: (m: number) => (m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`),
   },
 };
