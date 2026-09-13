@@ -120,6 +120,34 @@ function SubmitDialog({
   const { t } = useI18n();
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const inFlight = useRef(false);
+
+  const valid = isValidWin(text);
+
+  const handleSubmit = async () => {
+    if (inFlight.current || !isValidWin(text)) return;
+    inFlight.current = true;
+    setSubmitting(true);
+    setFailed(false);
+    try {
+      await onSubmit(text.trim());
+      setText("");
+    } catch (err) {
+      console.error("littlewins: unable to post win", err);
+      setFailed(true);
+    } finally {
+      inFlight.current = false;
+      setSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (submitting) return;
+    setFailed(false);
+    onClose();
+  };
+
   if (!open) return null;
 
   return (
@@ -127,7 +155,7 @@ function SubmitDialog({
       className="fixed inset-0 z-50 grid place-items-center wall-overlay p-5 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         className="animate-pop w-full max-w-lg border border-line bg-surface p-7 sm:p-10"
@@ -139,21 +167,32 @@ function SubmitDialog({
         </h2>
         <textarea
           rows={4}
-          maxLength={200}
+          maxLength={MAX_WIN_LENGTH}
           autoFocus
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          disabled={submitting}
+          onChange={(e) => {
+            setText(e.target.value.slice(0, MAX_WIN_LENGTH));
+            if (failed) setFailed(false);
+          }}
           placeholder={t.placeholder}
-          className="mt-7 w-full resize-none border-0 border-b border-line bg-transparent px-0 py-4 font-display text-2xl leading-snug outline-none placeholder:text-muted-foreground/60 focus:border-ink"
+          className="mt-7 w-full resize-none border-0 border-b border-line bg-transparent px-0 py-4 font-display text-2xl leading-snug outline-none placeholder:text-muted-foreground/60 focus:border-ink disabled:opacity-70"
         />
         <div className="mt-3 flex items-center justify-between text-[10px] text-muted-foreground">
-          <span>{text.length} / 200</span>
+          <span>
+            {text.length} / {MAX_WIN_LENGTH}
+          </span>
           <span>{t.anonymous}</span>
         </div>
+        {failed ? (
+          <p role="alert" className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+            {t.submitError}
+          </p>
+        ) : null}
         <div className="mt-6 flex gap-3">
           <Button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             variant="outline"
             disabled={submitting}
             className="h-10 flex-1 rounded-none border-line bg-transparent text-sm text-muted-foreground shadow-none hover:bg-muted"
@@ -162,16 +201,8 @@ function SubmitDialog({
           </Button>
           <Button
             type="button"
-            disabled={text.trim().length === 0 || submitting}
-            onClick={async () => {
-              setSubmitting(true);
-              try {
-                await onSubmit(text.trim());
-                setText("");
-              } finally {
-                setSubmitting(false);
-              }
-            }}
+            disabled={!valid || submitting}
+            onClick={handleSubmit}
             className="h-10 flex-1 rounded-none bg-ink text-sm text-background shadow-none hover:bg-accent-ink disabled:opacity-40"
           >
             {submitting ? "…" : t.submit}
