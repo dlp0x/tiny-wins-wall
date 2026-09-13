@@ -242,21 +242,22 @@ function LittleWins() {
   const [wins, setWins] = useState<DbWin[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [failedToLoad, setFailedToLoad] = useState(false);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
+    setFailedToLoad(false);
     fetchWins(lang)
       .then((data) => {
-        if (active) {
-          setWins(data);
-          setError(null);
-        }
+        if (active) setWins(data);
       })
       .catch((err) => {
         console.error("littlewins: unable to load wins", err);
-        if (active) setError("Unable to load the wall right now.");
+        if (active) {
+          setWins([]);
+          setFailedToLoad(true);
+        }
       })
       .finally(() => {
         if (active) setLoading(false);
