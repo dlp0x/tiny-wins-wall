@@ -170,12 +170,21 @@ body {
 @utility delay-3 { animation-delay: 165ms; }
 @utility delay-4 { animation-delay: 220ms; }
 @utility delay-5 { animation-delay: 275ms; }
-@utility win-tint-overlay {
-  &:hover {
-    background: color-mix(in oklab, var(--surface) 96%, var(--ink));
-  }
+
+@utility win-tint-sky {
+  background: var(--tint-sky);
+  &:hover { background: color-mix(in oklab, var(--tint-sky) 65%, var(--surface)); }
 }
 
+@utility win-tint-rose {
+  background: var(--tint-rose);
+  &:hover { background: color-mix(in oklab, var(--tint-rose) 65%, var(--surface)); }
+}
+
+@utility win-tint-sage {
+  background: var(--tint-sage);
+  &:hover { background: color-mix(in oklab, var(--tint-sage) 65%, var(--surface)); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -10,9 +10,15 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "littlewins — a public wall of small personal victories" },
-      { name: "description", content: "A calm, anonymous wall of little wins. Small victories, shared quietly." },
+      {
+        name: "description",
+        content: "A calm, anonymous wall of little wins. Small victories, shared quietly.",
+      },
       { property: "og:title", content: "littlewins — a wall of small personal victories" },
-      { property: "og:description", content: "A calm, anonymous wall of little wins. Small victories, shared quietly." },
+      {
+        property: "og:description",
+        content: "A calm, anonymous wall of little wins. Small victories, shared quietly.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -30,24 +36,44 @@ function LangSwitch() {
   const { lang, setLang } = useI18n();
   const item = (value: Lang) =>
     `h-6 min-w-7 rounded-none px-1.5 text-[10px] font-medium transition-colors focus-visible:ring-1 focus-visible:ring-ring ${
-      lang === value ? "text-ink hover:bg-muted" : "text-muted-foreground/70 hover:bg-muted hover:text-ink"
+      lang === value
+        ? "text-ink hover:bg-muted"
+        : "text-muted-foreground/70 hover:bg-muted hover:text-ink"
     }`;
   return (
     <div className="inline-flex shrink-0 items-center" aria-label="Language">
-      <Button variant="ghost" type="button" onClick={() => setLang("en")} className={item("en")} aria-pressed={lang === "en"}>EN</Button>
-      <span aria-hidden className="text-[10px] text-muted-foreground/40">/</span>
-      <Button variant="ghost" type="button" onClick={() => setLang("fr")} className={item("fr")} aria-pressed={lang === "fr"}>FR</Button>
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={() => setLang("en")}
+        className={item("en")}
+        aria-pressed={lang === "en"}
+      >
+        EN
+      </Button>
+      <span aria-hidden className="text-[10px] text-muted-foreground/40">
+        /
+      </span>
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={() => setLang("fr")}
+        className={item("fr")}
+        aria-pressed={lang === "fr"}
+      >
+        FR
+      </Button>
     </div>
   );
 }
 
 const winTreatments = [
-  "win-tint-overlay px-6 py-8 sm:px-8 sm:py-10",
-  "win-tint-overlay px-2 py-6 sm:px-4 sm:py-9",
-  "win-tint-overlay px-6 py-7 sm:px-8 sm:py-9",
-  "win-tint-overlay px-3 py-8 text-center sm:px-6 sm:py-12",
-  "win-tint-overlay px-6 py-8 sm:px-8 sm:py-10",
-  "win-tint-overlay px-2 py-7 sm:px-5 sm:py-10",
+  "win-tint-rose px-6 py-8 sm:px-8 sm:py-10",
+  "px-2 py-6 sm:px-4 sm:py-9",
+  "win-tint-sky px-6 py-7 sm:px-8 sm:py-9",
+  "px-3 py-8 text-center sm:px-6 sm:py-12",
+  "win-tint-sage px-6 py-8 sm:px-8 sm:py-10",
+  "px-2 py-7 sm:px-5 sm:py-10",
 ] as const;
 
 const winType = [
@@ -71,29 +97,85 @@ function Slip({ win, index }: { win: DbWin; index: number }) {
   const type = winType[index % winType.length];
   const delay = delayClasses[Math.min(index, delayClasses.length - 1)];
   return (
-    <li className={`wall-entry animate-rise mb-8 break-inside-avoid sm:mb-10 ${treatment} ${delay}`}>
+    <li
+      className={`wall-entry animate-rise mb-8 break-inside-avoid sm:mb-10 ${treatment} ${delay}`}
+    >
       <p className={`text-balance font-display ${type}`}>{win.content}</p>
-      <p className="mt-5 text-[10px] font-medium text-muted-foreground">{t.ago(minutesAgo(win.created_at))}</p>
+      <p className="mt-5 text-[10px] font-medium text-muted-foreground">
+        {t.ago(minutesAgo(win.created_at))}
+      </p>
     </li>
   );
 }
 
-function SubmitDialog({ open, onClose, onSubmit }: { open: boolean; onClose: () => void; onSubmit: (text: string) => Promise<void> }) {
+function SubmitDialog({
+  open,
+  onClose,
+  onSubmit,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (text: string) => Promise<void>;
+}) {
   const { t } = useI18n();
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center wall-overlay p-5 backdrop-blur-sm" role="dialog" aria-modal="true" onClick={onClose}>
-      <div className="animate-pop w-full max-w-lg border border-line bg-surface p-7 sm:p-10" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 grid place-items-center wall-overlay p-5 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
+      <div
+        className="animate-pop w-full max-w-lg border border-line bg-surface p-7 sm:p-10"
+        onClick={(e) => e.stopPropagation()}
+      >
         <p className="text-[10px] font-medium text-muted-foreground">{t.modalEyebrow}</p>
-        <h2 className="mt-3 max-w-sm text-balance font-display text-3xl leading-tight sm:text-4xl">{t.modalTitle}</h2>
-        <textarea rows={4} maxLength={200} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={t.placeholder} className="mt-7 w-full resize-none border-0 border-b border-line bg-transparent px-0 py-4 font-display text-2xl leading-snug outline-none placeholder:text-muted-foreground/60 focus:border-ink" />
-        <div className="mt-3 flex items-center justify-between text-[10px] text-muted-foreground"><span>{text.length} / 200</span><span>{t.anonymous}</span></div>
+        <h2 className="mt-3 max-w-sm text-balance font-display text-3xl leading-tight sm:text-4xl">
+          {t.modalTitle}
+        </h2>
+        <textarea
+          rows={4}
+          maxLength={200}
+          autoFocus
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={t.placeholder}
+          className="mt-7 w-full resize-none border-0 border-b border-line bg-transparent px-0 py-4 font-display text-2xl leading-snug outline-none placeholder:text-muted-foreground/60 focus:border-ink"
+        />
+        <div className="mt-3 flex items-center justify-between text-[10px] text-muted-foreground">
+          <span>{text.length} / 200</span>
+          <span>{t.anonymous}</span>
+        </div>
         <div className="mt-6 flex gap-3">
-          <Button type="button" onClick={onClose} variant="outline" disabled={submitting} className="h-10 flex-1 rounded-none border-line bg-transparent text-sm text-muted-foreground shadow-none hover:bg-muted">{t.cancel}</Button>
-          <Button type="button" disabled={text.trim().length === 0 || submitting} onClick={async () => { setSubmitting(true); try { await onSubmit(text.trim()); setText(""); } finally { setSubmitting(false); } }} className="h-10 flex-1 rounded-none bg-ink text-sm text-background shadow-none hover:bg-accent-ink disabled:opacity-40">{submitting ? "…" : t.submit}</Button>
+          <Button
+            type="button"
+            onClick={onClose}
+            variant="outline"
+            disabled={submitting}
+            className="h-10 flex-1 rounded-none border-line bg-transparent text-sm text-muted-foreground shadow-none hover:bg-muted"
+          >
+            {t.cancel}
+          </Button>
+          <Button
+            type="button"
+            disabled={text.trim().length === 0 || submitting}
+            onClick={async () => {
+              setSubmitting(true);
+              try {
+                await onSubmit(text.trim());
+                setText("");
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+            className="h-10 flex-1 rounded-none bg-ink text-sm text-background shadow-none hover:bg-accent-ink disabled:opacity-40"
+          >
+            {submitting ? "…" : t.submit}
+          </Button>
         </div>
       </div>
     </div>
@@ -104,7 +186,18 @@ function ThemeToggle() {
   const { theme, toggle } = useTheme();
   const { t } = useI18n();
   const label = theme === "dark" ? t.themeToLight : t.themeToDark;
-  return <Button type="button" variant="ghost" onClick={toggle} title={label} aria-label={label} className="h-6 rounded-none px-1.5 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:bg-muted hover:text-ink focus-visible:ring-1 focus-visible:ring-ring">{theme === "dark" ? "day" : "night"}</Button>;
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      onClick={toggle}
+      title={label}
+      aria-label={label}
+      className="h-6 rounded-none px-1.5 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:bg-muted hover:text-ink focus-visible:ring-1 focus-visible:ring-ring"
+    >
+      {theme === "dark" ? "day" : "night"}
+    </Button>
+  );
 }
 
 function LittleWins() {
@@ -128,8 +221,12 @@ function LittleWins() {
         console.error("littlewins: unable to load wins", err);
         if (active) setError("Unable to load the wall right now.");
       })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, [lang]);
 
   const count = useMemo(() => formatCount(BASE_COUNT + wins.length, lang), [wins.length, lang]);
@@ -142,12 +239,32 @@ function LittleWins() {
 
   return (
     <div className="min-h-screen bg-background text-ink">
-      <header><div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-5 sm:px-8 sm:py-7 lg:px-10"><div className="font-display text-2xl italic">littlewins</div><Button type="button" onClick={() => setOpen(true)} className="hidden h-8 rounded-none bg-transparent px-3 text-sm font-medium text-ink shadow-none transition-colors hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring sm:inline-flex">{t.cta}</Button></div></header>
+      <header>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-5 sm:px-8 sm:py-7 lg:px-10">
+          <div className="font-display text-2xl italic">littlewins</div>
+          <Button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="hidden h-8 rounded-none bg-transparent px-3 text-sm font-medium text-ink shadow-none transition-colors hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring sm:inline-flex"
+          >
+            {t.cta}
+          </Button>
+        </div>
+      </header>
 
       <main className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <section className="pb-10 pt-8 sm:pb-14 sm:pt-11 lg:pb-16 lg:pt-14">
-          <h1 className="animate-rise max-w-3xl text-balance font-display text-[2.15rem] leading-[1.12] sm:text-[2.8rem] lg:text-[3.35rem]"><span>{count} {t.headlineSuffix}</span>{" "}<span className="text-muted-foreground">{t.since(startDateLabel[lang]).toLowerCase()}</span></h1>
-          <p className="animate-rise delay-2 mt-4 max-w-[38ch] text-pretty text-sm leading-relaxed text-muted-foreground sm:text-[15px]">{t.intro}</p>
+          <h1 className="animate-rise max-w-3xl text-balance font-display text-[2.15rem] leading-[1.12] sm:text-[2.8rem] lg:text-[3.35rem]">
+            <span>
+              {count} {t.headlineSuffix}
+            </span>{" "}
+            <span className="text-muted-foreground">
+              {t.since(startDateLabel[lang]).toLowerCase()}
+            </span>
+          </h1>
+          <p className="animate-rise delay-2 mt-4 max-w-[38ch] text-pretty text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+            {t.intro}
+          </p>
         </section>
 
         <section className="pb-20 sm:pb-28">
@@ -157,17 +274,37 @@ function LittleWins() {
             <p className="py-10 text-sm text-muted-foreground">{error}</p>
           ) : wins.length === 0 ? (
             <div className="flex min-h-[36vh] flex-col items-center justify-center py-16 text-center">
-              <p className="max-w-[22ch] text-balance font-display text-3xl leading-tight sm:text-4xl">{t.emptyWall}</p>
+              <p className="max-w-[22ch] text-balance font-display text-3xl leading-tight sm:text-4xl">
+                {t.emptyWall}
+              </p>
               <p className="mt-4 text-sm text-muted-foreground">{t.emptyWallCta}</p>
             </div>
           ) : (
-            <ul className="columns-1 gap-7 sm:columns-2 sm:gap-10 lg:columns-3 lg:gap-12">{wins.map((win, i) => <Slip key={win.id} win={win} index={i} />)}</ul>
+            <ul className="columns-1 gap-7 sm:columns-2 sm:gap-10 lg:columns-3 lg:gap-12">
+              {wins.map((win, i) => (
+                <Slip key={win.id} win={win} index={i} />
+              ))}
+            </ul>
           )}
         </section>
       </main>
 
-      <footer className="pb-24 sm:pb-10"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-5 py-8 sm:px-8 lg:px-10"><div className="flex items-center gap-3"><LangSwitch /><ThemeToggle /></div><p className="text-[10px] text-muted-foreground">{t.footer}</p></div></footer>
-      <Button type="button" onClick={() => setOpen(true)} className="fixed bottom-5 right-5 z-40 h-14 rounded-full border border-line bg-ink px-6 text-base font-medium text-background shadow-lg transition-transform hover:scale-[1.02] hover:bg-accent-ink focus-visible:ring-2 focus-visible:ring-ring sm:hidden">{t.cta}</Button>
+      <footer className="pb-24 sm:pb-10">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-5 py-8 sm:px-8 lg:px-10">
+          <div className="flex items-center gap-3">
+            <LangSwitch />
+            <ThemeToggle />
+          </div>
+          <p className="text-[10px] text-muted-foreground">{t.footer}</p>
+        </div>
+      </footer>
+      <Button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="fixed bottom-5 right-5 z-40 h-14 rounded-full border border-line bg-ink px-6 text-base font-medium text-background shadow-lg transition-transform hover:scale-[1.02] hover:bg-accent-ink focus-visible:ring-2 focus-visible:ring-ring sm:hidden"
+      >
+        {t.cta}
+      </Button>
       <SubmitDialog open={open} onClose={() => setOpen(false)} onSubmit={addWin} />
     </div>
   );
