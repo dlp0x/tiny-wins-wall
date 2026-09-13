@@ -18,6 +18,9 @@ type Strings = {
   themeToLight: string;
   emptyWall: string;
   emptyWallCta: string;
+  submitError: string;
+  loadError: string;
+  loading: string;
   ago: (m: number) => string;
 };
 
@@ -38,6 +41,9 @@ const dict: Record<Lang, Strings> = {
     themeToLight: "Switch to day",
     emptyWall: "Every wall starts somewhere.",
     emptyWallCta: "Add your little win.",
+    submitError: "Something went wrong. Your little win wasn't posted. Try again.",
+    loadError: "The wall didn't load. Try refreshing in a moment.",
+    loading: "Loading the wall…",
     ago: (m: number) => (m < 60 ? `${m}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`),
   },
   fr: {
@@ -56,6 +62,9 @@ const dict: Record<Lang, Strings> = {
     themeToLight: "Passer en jour",
     emptyWall: "Même les murs commencent quelque part.",
     emptyWallCta: "Ajoutez votre petite victoire.",
+    submitError: "Quelque chose s'est mal passé. Votre petite victoire n'a pas été publiée. Réessayez.",
+    loadError: "Le mur n'a pas pu se charger. Réessayez dans un instant.",
+    loading: "Chargement du mur…",
     ago: (m: number) => (m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`),
   },
 };
