@@ -11,6 +11,7 @@ import {
   type DbWin,
 } from "@/lib/wins-api";
 import { ThemeProvider, useTheme } from "@/lib/theme";
+import { useAnonymousIdentity } from "@/lib/anon-identity";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -239,6 +240,8 @@ function ThemeToggle() {
 
 function LittleWins() {
   const { lang, t } = useI18n();
+  // Sprint 5A: silent anonymous identity. Never rendered, never blocking.
+  useAnonymousIdentity();
   const [wins, setWins] = useState<DbWin[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
