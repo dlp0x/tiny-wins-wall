@@ -70,6 +70,41 @@ function LangSwitch() {
   );
 }
 
+function LanguageOrderSwitch({ order, onChange }: { order: Lang; onChange: (value: Lang) => void }) {
+  const item = (value: Lang) =>
+    `h-6 min-w-7 rounded-none px-1.5 text-[10px] font-medium transition-colors focus-visible:ring-1 focus-visible:ring-ring ${
+      order === value
+        ? "text-ink hover:bg-muted"
+        : "text-muted-foreground/70 hover:bg-muted hover:text-ink"
+    }`;
+
+  return (
+    <div className="inline-flex shrink-0 items-center" aria-label="Wall language order">
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={() => onChange("en")}
+        className={item("en")}
+        aria-pressed={order === "en"}
+      >
+        EN first
+      </Button>
+      <span aria-hidden className="text-[10px] text-muted-foreground/40">
+        /
+      </span>
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={() => onChange("fr")}
+        className={item("fr")}
+        aria-pressed={order === "fr"}
+      >
+        FR first
+      </Button>
+    </div>
+  );
+}
+
 const winTreatments = [
   "win-tint-rose px-6 py-8 sm:px-8 sm:py-10",
   "px-2 py-6 sm:px-4 sm:py-9",
@@ -259,12 +294,13 @@ function LittleWins() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [failedToLoad, setFailedToLoad] = useState(false);
+  const [languageOrder, setLanguageOrder] = useState<Lang>(lang);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setFailedToLoad(false);
-    fetchWins(lang)
+    fetchWins()
       .then((data) => {
         if (active) setWins(data);
       })
@@ -281,7 +317,17 @@ function LittleWins() {
     return () => {
       active = false;
     };
+  }, []);
+
+  useEffect(() => {
+    setLanguageOrder(lang);
   }, [lang]);
+
+  const sortedWins = useMemo(() => {
+    const preferred = wins.filter((win) => win.language === languageOrder);
+    const other = wins.filter((win) => win.language !== languageOrder);
+    return [...preferred, ...other];
+  }, [wins, languageOrder]);
 
   const count = useMemo(() => formatCount(BASE_COUNT + wins.length, lang), [wins.length, lang]);
 
@@ -346,11 +392,16 @@ function LittleWins() {
               </p>
             </div>
           ) : (
-            <ul className="columns-1 gap-7 sm:columns-2 sm:gap-10 lg:columns-3 lg:gap-12">
-              {wins.map((win, i) => (
-                <Slip key={win.id} win={win} index={i} />
-              ))}
-            </ul>
+            <>
+              <div className="mb-7 flex justify-end">
+                <LanguageOrderSwitch order={languageOrder} onChange={setLanguageOrder} />
+              </div>
+              <ul className="columns-1 gap-7 sm:columns-2 sm:gap-10 lg:columns-3 lg:gap-12">
+                {sortedWins.map((win, i) => (
+                  <Slip key={win.id} win={win} index={i} />
+                ))}
+              </ul>
+            </>
           )}
         </section>
       </main>
