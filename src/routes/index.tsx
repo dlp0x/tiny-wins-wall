@@ -11,7 +11,7 @@ import {
   type DbWin,
 } from "@/lib/wins-api";
 import { ThemeProvider, useTheme } from "@/lib/theme";
-import { useAnonymousIdentity } from "@/lib/anon-identity";
+import { FavoritesProvider, useFavorites } from "@/lib/favorites";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,7 +33,9 @@ export const Route = createFileRoute("/")({
   component: () => (
     <ThemeProvider>
       <I18nProvider>
-        <LittleWins />
+        <FavoritesProvider>
+          <LittleWins />
+        </FavoritesProvider>
       </I18nProvider>
     </ThemeProvider>
   ),
