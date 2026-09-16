@@ -102,17 +102,35 @@ function minutesAgo(createdAt: string) {
 
 function Slip({ win, index }: { win: DbWin; index: number }) {
   const { t } = useI18n();
+  const { isFavorite, toggle, ready } = useFavorites();
   const treatment = winTreatments[index % winTreatments.length];
   const type = winType[index % winType.length];
   const delay = delayClasses[Math.min(index, delayClasses.length - 1)];
+  const kept = isFavorite(win.id);
   return (
     <li
       className={`wall-entry animate-rise mb-8 break-inside-avoid sm:mb-10 ${treatment} ${delay}`}
     >
       <p className={`text-balance font-display ${type}`}>{win.content}</p>
-      <p className="mt-5 text-[10px] font-medium text-muted-foreground">
-        {t.ago(minutesAgo(win.created_at))}
-      </p>
+      <div className="mt-5 flex items-center gap-3">
+        <p className="text-[10px] font-medium text-muted-foreground">
+          {t.ago(minutesAgo(win.created_at))}
+        </p>
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={!ready}
+          onClick={() => toggle(win.id)}
+          title={kept ? t.kept : t.keepIt}
+          aria-label={kept ? t.kept : t.keepIt}
+          aria-pressed={kept}
+          className={`h-6 w-6 rounded-none p-0 text-[13px] leading-none shadow-none transition-colors hover:bg-transparent focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-40 ${
+            kept ? "text-ink" : "text-muted-foreground/50 hover:text-muted-foreground"
+          }`}
+        >
+          <span aria-hidden>{kept ? "♥" : "♡"}</span>
+        </Button>
+      </div>
     </li>
   );
 }
@@ -242,8 +260,7 @@ function ThemeToggle() {
 
 function LittleWins() {
   const { lang, t } = useI18n();
-  // Sprint 5A: silent anonymous identity. Never rendered, never blocking.
-  useAnonymousIdentity();
+  // Sprint 5A/5B: anonymous identity is resolved silently by FavoritesProvider.
   const [wins, setWins] = useState<DbWin[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
