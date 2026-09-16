@@ -48,7 +48,12 @@ const dict: Record<Lang, Strings> = {
     loading: "Loading the wall…",
     keepIt: "Keep this one",
     kept: "Kept",
-    ago: (m: number) => (m < 60 ? `${m}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`),
+    ago: (m: number) =>
+      m < 60
+        ? `${m}m ago`
+        : m < 1440
+          ? `${Math.round(m / 60)}h ago`
+          : `${Math.round(m / 1440)}d ago`,
   },
   fr: {
     since: (d: string) => `Depuis le ${d}`,
@@ -66,15 +71,22 @@ const dict: Record<Lang, Strings> = {
     themeToLight: "Passer en jour",
     emptyWall: "Même les murs commencent quelque part.",
     emptyWallCta: "Ajoutez votre petite victoire.",
-    submitError: "Quelque chose s'est mal passé. Votre petite victoire n'a pas été publiée. Réessayez.",
+    submitError:
+      "Quelque chose s'est mal passé. Votre petite victoire n'a pas été publiée. Réessayez.",
     loadError: "Le mur n'a pas pu se charger. Réessayez dans un instant.",
     loading: "Chargement du mur…",
     keepIt: "Je la garde",
     kept: "Gardée",
-    ago: (m: number) => (m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`),
+    ago: (m: number) =>
+      m < 60
+        ? `il y a ${m} min`
+        : m < 1440
+          ? `il y a ${Math.round(m / 60)} h`
+          : `il y a ${Math.round(m / 1440)} j`,
   },
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const startDateLabel = {
   en: "March 16, 2026",
   fr: "16 mars 2026",
@@ -90,12 +102,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useI18n() {
   const ctx = useContext(I18nContext);
   if (!ctx) throw new Error("useI18n must be used within I18nProvider");
   return ctx;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function formatCount(n: number, lang: Lang) {
   return new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-US").format(n);
 }

@@ -3,13 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { I18nProvider, formatCount, startDateLabel, useI18n, type Lang } from "@/lib/i18n";
 import { BASE_COUNT } from "@/lib/wins";
-import {
-  MAX_WIN_LENGTH,
-  createWin,
-  fetchWins,
-  isValidWin,
-  type DbWin,
-} from "@/lib/wins-api";
+import { MAX_WIN_LENGTH, createWin, fetchWins, isValidWin, type DbWin } from "@/lib/wins-api";
 import { ThemeProvider, useTheme } from "@/lib/theme";
 import { FavoritesProvider, useFavorites } from "@/lib/favorites";
 
@@ -341,7 +335,15 @@ function LittleWins() {
               <p className="max-w-[22ch] text-balance font-display text-3xl leading-tight sm:text-4xl">
                 {t.emptyWall}
               </p>
-              <p className="mt-4 text-sm text-muted-foreground">{t.emptyWallCta}</p>
+              <p className="mt-4 text-sm text-muted-foreground">
+                <Button
+                  type="button"
+                  onClick={() => setOpen(true)}
+                  className="hidden h-8 rounded-none bg-transparent px-3 text-sm font-medium text-ink shadow-none transition-colors hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring sm:inline-flex"
+                >
+                  {t.cta}
+                </Button>
+              </p>
             </div>
           ) : (
             <ul className="columns-1 gap-7 sm:columns-2 sm:gap-10 lg:columns-3 lg:gap-12">
