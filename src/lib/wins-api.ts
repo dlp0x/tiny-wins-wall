@@ -16,7 +16,7 @@ export async function fetchWins(language: "en" | "fr"): Promise<DbWin[]> {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as DbWin[];
 }
 
 export const MAX_WIN_LENGTH = 200;
