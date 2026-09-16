@@ -21,6 +21,8 @@ type Strings = {
   submitError: string;
   loadError: string;
   loading: string;
+  keepIt: string;
+  kept: string;
   ago: (m: number) => string;
 };
 
