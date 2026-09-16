@@ -21,6 +21,8 @@ type Strings = {
   submitError: string;
   loadError: string;
   loading: string;
+  keepIt: string;
+  kept: string;
   ago: (m: number) => string;
 };
 
@@ -44,6 +46,8 @@ const dict: Record<Lang, Strings> = {
     submitError: "Something went wrong. Your little win wasn't posted. Try again.",
     loadError: "The wall didn't load. Try refreshing in a moment.",
     loading: "Loading the wall…",
+    keepIt: "Keep this one",
+    kept: "Kept",
     ago: (m: number) => (m < 60 ? `${m}m ago` : m < 1440 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`),
   },
   fr: {
@@ -65,6 +69,8 @@ const dict: Record<Lang, Strings> = {
     submitError: "Quelque chose s'est mal passé. Votre petite victoire n'a pas été publiée. Réessayez.",
     loadError: "Le mur n'a pas pu se charger. Réessayez dans un instant.",
     loading: "Chargement du mur…",
+    keepIt: "Je la garde",
+    kept: "Gardée",
     ago: (m: number) => (m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`),
   },
 };
