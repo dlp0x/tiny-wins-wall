@@ -39,5 +39,5 @@ export async function createWin(raw: string, language: "en" | "fr"): Promise<DbW
     .single();
 
   if (error) throw error;
-  return data;
+  return data as DbWin;
 }
