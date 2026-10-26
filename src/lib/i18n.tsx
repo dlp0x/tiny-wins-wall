@@ -19,6 +19,7 @@ type Strings = {
   emptyWall: string;
   emptyWallCta: string;
   submitError: string;
+  linkError: string;
   loadError: string;
   loading: string;
   keepIt: string;
@@ -44,6 +45,7 @@ const dict: Record<Lang, Strings> = {
     emptyWall: "Every wall starts somewhere.",
     emptyWallCta: "Add your little win.",
     submitError: "Something went wrong. Your little win wasn't posted. Try again.",
+    linkError: "Links to other sites aren't allowed here. Remove it to post your little win.",
     loadError: "The wall didn't load. Try refreshing in a moment.",
     loading: "Loading the wall…",
     keepIt: "Keep this one",
@@ -73,6 +75,7 @@ const dict: Record<Lang, Strings> = {
     emptyWallCta: "Ajoutez votre petite victoire.",
     submitError:
       "Quelque chose s'est mal passé. Votre petite victoire n'a pas été publiée. Réessayez.",
+    linkError: "Les liens vers d'autres sites ne sont pas permis ici. Retirez-le pour publier votre petite victoire.",
     loadError: "Le mur n'a pas pu se charger. Réessayez dans un instant.",
     loading: "Chargement du mur…",
     keepIt: "Je la garde",
