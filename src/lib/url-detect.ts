@@ -36,9 +36,9 @@ const PATTERNS: RegExp[] = [
   new RegExp(String.raw`[\p{L}\p{N}-]+${SEP}${TLD}${END}`, "iu"),
   // Catch spaced-dot obfuscation only when the apparent domain ends like a URL.
   // This avoids false positives such as "I finished. Me, finally!".
-  new RegExp(String.raw`(?<![\p{L}\p{N}])[\p{L}\p{N}-]+\\s+\\.\\s+${TLD}(?=\\s*$|[/?#.)!;:\\]])`, "iu"),
+  new RegExp(String.raw`(?<![\p{L}\p{N}])[\p{L}\p{N}-]+\s+\.\s+${TLD}(?=\s*$|[/?#.)!;:\]])`, "iu"),
   // Bare IPv4 addresses are also link-like, even without a scheme.
-  /(?<![\\p{L}\\p{N}])(?:\\d{1,3}\\.){3}\\d{1,3}(?![\\p{L}\\p{N}])/u,
+  /(?<![\p{L}\p{N}])(?:\d{1,3}\.){3}\d{1,3}(?![\p{L}\p{N}])/u,
 ];
 
 export function containsUrl(text: string): boolean {
