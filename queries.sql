@@ -46,7 +46,7 @@ order by grantee, privilege_type;
 
 create table if not exists public.favorites (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
+  user_id uuid not null, -- auth.uid() of the current identity (no FK to auth.users by convention)
   win_id uuid not null references public.wins(id) on delete cascade,
   created_at timestamptz not null default now(),
   constraint favorites_user_win_unique unique (user_id, win_id)
