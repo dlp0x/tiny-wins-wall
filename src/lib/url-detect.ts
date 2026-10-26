@@ -9,12 +9,13 @@
  *  4. A bare domain: label + dot-like separator + a known TLD from the list
  *     below (example.com, EXAMPLE.CA, example[.]org, example (dot) com,
  *     example dot com, example point fr, full-width dots).
+ * 5. A spaced plain dot (example . com) only when the apparent domain ends
+ *     like a URL, plus bare IPv4 addresses.
  *
  * Known limits: domains on TLDs outside the list, letter-spaced schemes
- * ("h t t p"), IP addresses without a scheme, and links described in prose
- * are not detected. A plain "." followed by a space is NOT treated as a
- * separator, so ordinary sentences ("…fini. Me voilà") are not blocked.
- */
+ * ("h t t p"), and links described in prose are not detected. A plain "."
+ * followed by a space is NOT generally treated as a separator, so ordinary
+ * sentences ("I finished. Me, finally!") are not blocked. */
 
 export const BLOCKED_TLDS = [
   "com", "net", "org", "ca", "fr", "io", "co", "uk", "de", "be", "ch", "eu", "us",
