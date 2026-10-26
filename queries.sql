@@ -89,3 +89,31 @@ create policy "Users can delete their own favorites"
 -- select policyname, cmd, roles, qual, with_check
 -- from pg_policies where schemaname = 'public' and tablename = 'favorites';
 -- select count(*) from public.favorites;
+
+
+-- =====================================================================
+-- Sprint — Block URLs in wins (GitHub issue #5) — PROPOSAL, NOT EXECUTED
+-- =====================================================================
+-- Today the link rule is enforced in the browser only. A direct request to
+-- the database API can still insert a win containing a link. This adds the
+-- same rule server-side as a CHECK constraint (applies to every insert/update,
+-- whatever the client). Mirrors src/lib/url-detect.ts — keep both in sync.
+-- NOT VALID: existing rows are not re-checked; only new writes are.
+
+create or replace function public.win_contains_url(t text)
+returns boolean language sql immutable as $$
+  select
+    t ~* '[a-z][a-z0-9+.-]*:\s*//'
+    or t ~* '(^|[^[:alnum:]])(javascript|data|mailto)\s*:'
+    or t ~* '(^|[^[:alnum:]])www\s*([.。．]|\s*[\[(]\s*(\.|dot|point)\s*[\])]\s*|\s+(dot|point)\s+)\s*[[:alnum:]]'
+    or t ~* '[[:alnum:]-]+([.。．]|\s*[\[(]\s*(\.|dot|point)\s*[\])]\s*|\s+(dot|point)\s+)(com|net|org|ca|fr|io|co|uk|de|be|ch|eu|us|info|biz|app|dev|me|ly|gg|tv|xyz|site|online|shop|store|link|page|ai|qc|quebec|art|blog|news|live|club|top|to|sh|so|fm|cc|ru|cn|es|it|nl)([^[:alnum:]]|$)'
+$$;
+
+alter table public.wins
+  add constraint wins_no_url check (not public.win_contains_url(content)) not valid;
+
+-- Verify after running (should fail with a check violation):
+-- insert into public.wins (content, language) values ('see example.com', 'en');
+-- Rollback if needed:
+-- alter table public.wins drop constraint wins_no_url;
+-- drop function public.win_contains_url(text);

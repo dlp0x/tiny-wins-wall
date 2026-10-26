@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { I18nProvider, formatCount, startDateLabel, useI18n, type Lang } from "@/lib/i18n";
 import { BASE_COUNT } from "@/lib/wins";
+import { containsUrl } from "@/lib/url-detect";
 import { MAX_WIN_LENGTH, createWin, fetchWins, isValidWin, type DbWin } from "@/lib/wins-api";
 import { ThemeProvider, useTheme } from "@/lib/theme";
 import { FavoritesProvider, useFavorites } from "@/lib/favorites";
@@ -186,6 +187,7 @@ function SubmitDialog({
   const inFlight = useRef(false);
 
   const valid = isValidWin(text);
+  const hasLink = containsUrl(text);
 
   const handleSubmit = async () => {
     if (inFlight.current || !isValidWin(text)) return;
@@ -246,7 +248,11 @@ function SubmitDialog({
           </span>
           <span>{t.anonymous}</span>
         </div>
-        {failed ? (
+        {hasLink ? (
+          <p role="alert" className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+            {t.linkError}
+          </p>
+        ) : failed ? (
           <p role="alert" className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
             {t.submitError}
           </p>
