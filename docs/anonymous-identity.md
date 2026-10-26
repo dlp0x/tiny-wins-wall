@@ -42,3 +42,14 @@ An anonymous identity lives in the browser/device session. If local data is
 cleared, or the person switches browser or device before creating a permanent
 account, the anonymous data may not be recoverable. This must also be explained
 later in the public littlewins FAQ.
+
+## Favorites ("petits cœurs", Sprint 5B)
+
+Each win shows a small ♡ that becomes ♥ when kept. A favorite is a row in
+`public.favorites` (`user_id`, `win_id`), unique per pair at the database
+level, readable/creatable/deletable only by its owner (`auth.uid() = user_id`).
+No count is ever shown or exposed. Favorites are reloaded from the database for
+the current identity on every visit; there is no local copy. When an anonymous
+identity is later linked to a permanent account, Supabase keeps the same user
+id, so favorites follow without migration. SQL lives in `queries.sql`
+(run manually). Until anonymous sign-ins are enabled, the heart stays inert.
