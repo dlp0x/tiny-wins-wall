@@ -70,7 +70,13 @@ function LangSwitch() {
   );
 }
 
-function LanguageOrderSwitch({ order, onChange }: { order: Lang; onChange: (value: Lang) => void }) {
+function LanguageOrderSwitch({
+  order,
+  onChange,
+}: {
+  order: Lang;
+  onChange: (value: Lang) => void;
+}) {
   const item = (value: Lang) =>
     `h-6 min-w-7 rounded-none px-1.5 text-[10px] font-medium transition-colors focus-visible:ring-1 focus-visible:ring-ring ${
       order === value
