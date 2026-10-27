@@ -178,10 +178,11 @@ function SubmitDialog({
 }: {
   open: boolean;
   onClose: () => void;
-  onSubmit: (text: string) => Promise<void>;
+  onSubmit: (text: string, language: Lang) => Promise<void>;
 }) {
   const { t } = useI18n();
   const [text, setText] = useState("");
+  const [language, setLanguage] = useState<Lang | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [failed, setFailed] = useState(false);
   const inFlight = useRef(false);
@@ -190,13 +191,14 @@ function SubmitDialog({
   const hasLink = containsUrl(text);
 
   const handleSubmit = async () => {
-    if (inFlight.current || !isValidWin(text)) return;
+    if (inFlight.current || !isValidWin(text) || !language) return;
     inFlight.current = true;
     setSubmitting(true);
     setFailed(false);
     try {
-      await onSubmit(text.trim());
+      await onSubmit(text.trim(), language);
       setText("");
+      setLanguage(null);
     } catch (err) {
       console.error("littlewins: unable to post win", err);
       setFailed(true);
@@ -229,6 +231,31 @@ function SubmitDialog({
         <h2 className="mt-3 max-w-sm text-balance font-display text-3xl leading-tight sm:text-4xl">
           {t.modalTitle}
         </h2>
+        <div className="mt-7">
+          <p className="mb-3 text-[11px] font-medium text-muted-foreground">{t.winLanguageLabel}</p>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t.winLanguageLabel}>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={submitting}
+              onClick={() => setLanguage("fr")}
+              aria-pressed={language === "fr"}
+              className={`h-9 rounded-none px-3 text-xs shadow-none ${language === "fr" ? "border-ink bg-muted text-ink" : "border-line bg-transparent text-muted-foreground hover:bg-muted"}`}
+            >
+              🇫🇷 {t.winLanguageFr}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={submitting}
+              onClick={() => setLanguage("en")}
+              aria-pressed={language === "en"}
+              className={`h-9 rounded-none px-3 text-xs shadow-none ${language === "en" ? "border-ink bg-muted text-ink" : "border-line bg-transparent text-muted-foreground hover:bg-muted"}`}
+            >
+              🇬🇧 {t.winLanguageEn}
+            </Button>
+          </div>
+        </div>
         <textarea
           rows={4}
           maxLength={MAX_WIN_LENGTH}
@@ -240,7 +267,7 @@ function SubmitDialog({
             if (failed) setFailed(false);
           }}
           placeholder={t.placeholder}
-          className="mt-7 w-full resize-none border-0 border-b border-line bg-transparent px-0 py-4 font-display text-2xl leading-snug outline-none placeholder:text-muted-foreground/60 focus:border-ink disabled:opacity-70"
+          className="mt-5 w-full resize-none border-0 border-b border-line bg-transparent px-0 py-4 font-display text-2xl leading-snug outline-none placeholder:text-muted-foreground/60 focus:border-ink disabled:opacity-70"
         />
         <div className="mt-3 flex items-center justify-between text-[10px] text-muted-foreground">
           <span>
@@ -269,7 +296,7 @@ function SubmitDialog({
           </Button>
           <Button
             type="button"
-            disabled={!valid || submitting}
+            disabled={!valid || !language || submitting}
             onClick={handleSubmit}
             className="h-10 flex-1 rounded-none bg-ink text-sm text-background shadow-none hover:bg-accent-ink disabled:opacity-40"
           >
@@ -343,8 +370,8 @@ function LittleWins() {
 
   const count = useMemo(() => formatCount(BASE_COUNT + wins.length, lang), [wins.length, lang]);
 
-  const addWin = async (text: string) => {
-    const win = await createWin(text, lang);
+  const addWin = async (text: string, language: Lang) => {
+    const win = await createWin(text, language);
     setWins((prev) => [win, ...prev]);
     setOpen(false);
   };
