@@ -14,6 +14,8 @@ describe("containsUrl — refused", () => {
     "example (dot) com",
     "example dot com",
     "monsite point fr",
+    "example . com",
+    "The server address is 192.168.1.10",
     "javascript:alert(1)",
     "HTTPS://Example.Net/x",
     "sub.example.co.uk",
@@ -31,6 +33,7 @@ describe("containsUrl — accepted", () => {
     "I finished. Me, finally!",
     "J'ai fini. Ça va mieux.",
     "Learned Node.js today",
+    "Node.js is useful",
     "<script>alert(1)</script> made me laugh",
     "Ratio 3.5 to 1, and it worked",
   ])("%s", (t) => {

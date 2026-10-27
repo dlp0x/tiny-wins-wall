@@ -99,6 +99,7 @@ create policy "Users can delete their own favorites"
 -- same rule server-side as a CHECK constraint (applies to every insert/update,
 -- whatever the client). Mirrors src/lib/url-detect.ts — keep both in sync.
 -- NOT VALID: existing rows are not re-checked; only new writes are.
+-- Includes spaced-dot domains only when they end like a URL, plus bare IPv4 addresses.
 
 create or replace function public.win_contains_url(t text)
 returns boolean language sql immutable as $$
@@ -107,6 +108,8 @@ returns boolean language sql immutable as $$
     or t ~* '(^|[^[:alnum:]])(javascript|data|mailto)\s*:'
     or t ~* '(^|[^[:alnum:]])www\s*([.。．]|\s*[\[(]\s*(\.|dot|point)\s*[\])]\s*|\s+(dot|point)\s+)\s*[[:alnum:]]'
     or t ~* '[[:alnum:]-]+([.。．]|\s*[\[(]\s*(\.|dot|point)\s*[\])]\s*|\s+(dot|point)\s+)(com|net|org|ca|fr|io|co|uk|de|be|ch|eu|us|info|biz|app|dev|me|ly|gg|tv|xyz|site|online|shop|store|link|page|ai|qc|quebec|art|blog|news|live|club|top|to|sh|so|fm|cc|ru|cn|es|it|nl)([^[:alnum:]]|$)'
+    or t ~* '(^|[^[:alnum:]])[[:alnum:]-]+[[:space:]]+[.][[:space:]]+(com|net|org|ca|fr|io|co|uk|de|be|ch|eu|us|info|biz|app|dev|me|ly|gg|tv|xyz|site|online|shop|store|link|page|ai|qc|quebec|art|blog|news|live|club|top|to|sh|so|fm|cc|ru|cn|es|it|nl)([[:space:]]*$|[/#?]|[.][[:space:]]*$|[!;:)]([[:space:]]|$))'
+    or t ~* '(^|[^[:digit:]])([0-9]{1,3}[.]){3}[0-9]{1,3}([^[:digit:]]|$)'
 $$;
 
 alter table public.wins
