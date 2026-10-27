@@ -9,6 +9,9 @@ type Strings = {
   cta: string;
   modalEyebrow: string;
   modalTitle: string;
+  winLanguageLabel: string;
+  winLanguageFr: string;
+  winLanguageEn: string;
   placeholder: string;
   anonymous: string;
   cancel: string;
@@ -35,6 +38,9 @@ const dict: Record<Lang, Strings> = {
     cta: "+ add my little win",
     modalEyebrow: "Your little win",
     modalTitle: "What made today a little softer?",
+    winLanguageLabel: "Language of this win",
+    winLanguageFr: "Français",
+    winLanguageEn: "English",
     placeholder: "Describe it, in your own words…",
     anonymous: "posted anonymously",
     cancel: "Cancel",
@@ -64,6 +70,9 @@ const dict: Record<Lang, Strings> = {
     cta: "+ Ajouter ma petite victoire",
     modalEyebrow: "Votre petite victoire",
     modalTitle: "Qu'est-ce qui a adouci votre journée ?",
+    winLanguageLabel: "Langue de cette victoire",
+    winLanguageFr: "Français",
+    winLanguageEn: "English",
     placeholder: "Décrivez, dans vos mots…",
     anonymous: "publié anonymement",
     cancel: "Annuler",
