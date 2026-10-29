@@ -11,12 +11,12 @@ import { FavoritesProvider, useFavorites } from "@/lib/favorites";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "littlewins — a public wall of small personal victories" },
+      { title: "littlewins | a public wall of small personal victories" },
       {
         name: "description",
         content: "A calm, anonymous wall of little wins. Small victories, shared quietly.",
       },
-      { property: "og:title", content: "littlewins — a wall of small personal victories" },
+      { property: "og:title", content: "littlewins | a wall of small personal victories" },
       {
         property: "og:description",
         content: "A calm, anonymous wall of little wins. Small victories, shared quietly.",
