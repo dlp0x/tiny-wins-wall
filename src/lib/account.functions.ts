@@ -3,10 +3,11 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /**
  * Verifies a Cloudflare Turnstile token server-side before account creation.
- * Fails closed: without the TURNSTILE_SECRET_KEY secret, creation is refused.
+ * This endpoint intentionally does not require a Supabase session: it is called
+ * while the visitor is still anonymous, and Turnstile is the proof checked here.
+ * It does not create or modify an account. Fails closed without the secret.
  */
 export const verifyCaptcha = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((input: { token: string }) => {
     if (typeof input?.token !== "string" || input.token.length < 10 || input.token.length > 4096)
       throw new Error("invalid_token");
@@ -24,7 +25,7 @@ export const verifyCaptcha = createServerFn({ method: "POST" })
       body,
     });
     const json = (await res.json().catch(() => ({}))) as { success?: boolean };
-    return { ok: json.success === true };
+    return { ok: res.ok && json.success === true };
   });
 
 /**
