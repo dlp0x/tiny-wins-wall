@@ -185,12 +185,43 @@ drop policy if exists "Anyone can read published wins" on public.wins;
 create policy "Anyone can read published wins" on public.wins for select to anon, authenticated
   using (status = 'published' and (user_id is null or not public.is_deactivated(user_id)));
 
--- 6.3 Permanent deletion: done by the app server (service role) in this order:
---   favorites (user_id) → wins (user_id; others' favorites cascade via
---   favorites.win_id FK) → account_status → auth user.
--- No extra SQL required. Optional safety net for leftovers if an auth user is
--- ever deleted another way:
--- delete from public.favorites f where not exists (select 1 from auth.users u where u.id = f.user_id);
+-- 6.3 Permanent deletion — one atomic database transaction.
+-- The app server calls this function with the service-role client. The function
+-- deletes the caller's private data, their wins (which cascade-delete ALL hearts
+-- on those wins, including hearts from other visitors), their status row, and
+-- finally the auth user. If any statement fails, PostgreSQL rolls back the
+-- entire operation; there can be no half-deleted account.
+--
+-- SECURITY: executable only by service_role. Never grant this function to
+-- anon/authenticated. The server endpoint separately verifies that the
+-- authenticated caller is a permanent (non-anonymous) account.
+create or replace function public.delete_account_data(_user_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+begin
+  if auth.role() is distinct from 'service_role' then
+    raise exception 'service_role_required';
+  end if;
+
+  delete from public.favorites where user_id = _user_id;
+  delete from public.wins where user_id = _user_id;
+  delete from public.account_status where user_id = _user_id;
+  delete from auth.users where id = _user_id;
+end;
+$function$;
+
+revoke all on function public.delete_account_data(uuid) from public, anon, authenticated;
+grant execute on function public.delete_account_data(uuid) to service_role;
+
+-- Validation (read only):
+-- select proname, prosecdef from pg_proc
+-- where proname = 'delete_account_data' and pronamespace = 'public'::regnamespace;
+-- After a deletion: select count(*) from public.wins where user_id = '<id>';       -- 0
+--                   select count(*) from public.favorites where user_id = '<id>';  -- 0
+--                   select count(*) from auth.users where id = '<id>';             -- 0
 
 -- Validation (read only):
 -- select column_name from information_schema.columns where table_name='wins';

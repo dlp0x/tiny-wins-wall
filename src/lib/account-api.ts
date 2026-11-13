@@ -83,20 +83,22 @@ export async function sendPasswordReset(email: string): Promise<void> {
 type LooseClient = { from: (table: string) => any };
 const db = supabase as unknown as LooseClient;
 
-/** True when this account is deactivated. Errors resolve to false (never blocks). */
+/**
+ * True when this account is deactivated.
+ * Fail closed: if status cannot be checked, the caller must not enter the
+ * account dashboard as though the account were active.
+ */
 export async function isDeactivated(userId: string): Promise<boolean> {
-  try {
-    const { data, error } = await db
-      .from("account_status")
-      .select("user_id")
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (error) throw error;
-    return Boolean(data);
-  } catch (err) {
-    console.warn("littlewins: account status unavailable", err);
-    return false;
+  const { data, error } = await db
+    .from("account_status")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) {
+    console.error("littlewins: account status check failed", error);
+    throw error;
   }
+  return Boolean(data);
 }
 
 /** Reversible: hides this account's wins from the wall, deletes nothing. */
