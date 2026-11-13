@@ -80,7 +80,10 @@ id, so favorites follow without migration. SQL lives in `queries.sql`
   stay with that abandoned identity. Signing out gives a fresh anonymous visitor.
 - **Deactivate vs delete:** deactivation is reversible — data kept, your wins
   hidden from the wall, you're signed out; on next sign-in you're asked to
-  reactivate (or delete). Deletion is permanent: account, your wins, your hearts
-  and your account status row are erased; others' hearts on your wins go too.
+  reactivate (or delete). Deletion is permanent and runs as one database
+  transaction: account, your wins, your hearts and your account status row are
+  erased. Other visitors' hearts on your wins are also erased because those
+  hearts belong to the deleted wins. If any deletion step fails, the whole
+  transaction rolls back.
 - **Wins written before 6.1** have no owner and cannot be hidden or deleted
   with an account.
