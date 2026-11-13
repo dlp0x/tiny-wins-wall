@@ -120,3 +120,82 @@ alter table public.wins
 -- Rollback if needed:
 -- alter table public.wins drop constraint wins_no_url;
 -- drop function public.win_contains_url(text);
+
+
+-- =====================================================================
+-- Sprint 6 — Permanent accounts, no public identity — PROPOSAL, NOT EXECUTED
+-- =====================================================================
+-- Run manually, in order, in the SQL editor. Lovable executed nothing.
+--
+-- Manual AUTH settings (not SQL) also required:
+--   * Anonymous sign-ins: ON (already required since Sprint 5A).
+--   * Email provider: ON, "Confirm email": ON (verification link).
+--   * Site URL / redirect URLs: add the site origin and <origin>/reset-password.
+--   * Do NOT enable the built-in auth CAPTCHA: it would also require a CAPTCHA
+--     for the silent anonymous sign-in and break the wall. Turnstile is
+--     verified by the app server (secret TURNSTILE_SECRET_KEY) instead.
+
+-- 6.1 Link wins to their author (private, never exposed on the wall).
+-- WHY: wins have no owner today, so they cannot follow an account, be hidden
+-- on deactivation, or be deleted with the account.
+-- RISK: existing wins stay user_id = NULL (author unknowable) → they are never
+-- hidden/deleted by account actions. Nullable + default = no app breakage.
+alter table public.wins add column if not exists user_id uuid default auth.uid();
+create index if not exists wins_user_id_idx on public.wins (user_id);
+-- The app never selects user_id. To guarantee it is never readable through the
+-- public API, restrict column privileges:
+revoke select on public.wins from anon, authenticated;
+grant select (id, content, language, status, created_at, published_at) on public.wins to anon, authenticated;
+-- Insert: user_id may only be your own id (or null for no identity).
+drop policy if exists "Anyone can submit a win" on public.wins;
+create policy "Anyone can submit a win" on public.wins for insert to anon, authenticated
+  with check (
+    status = 'published'
+    and char_length(trim(content)) between 1 and 200
+    and language = any (array['en','fr'])
+    and (user_id is null or user_id = auth.uid())
+  );
+
+-- 6.2 Reversible deactivation. A row here = account deactivated. Nothing deleted.
+create table if not exists public.account_status (
+  user_id uuid primary key, -- auth.uid(); no FK to auth.users by convention
+  deactivated_at timestamptz not null default now()
+);
+grant select, insert, delete on public.account_status to authenticated;
+grant all on public.account_status to service_role;
+alter table public.account_status enable row level security;
+create policy "Read own status" on public.account_status for select to authenticated
+  using (auth.uid() = user_id);
+-- Only permanent (non-anonymous) accounts can deactivate.
+create policy "Deactivate own account" on public.account_status for insert to authenticated
+  with check (auth.uid() = user_id and coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) = false);
+create policy "Reactivate own account" on public.account_status for delete to authenticated
+  using (auth.uid() = user_id);
+
+-- Hide wins of deactivated accounts from the wall (security definer avoids
+-- exposing account_status to visitors).
+create or replace function public.is_deactivated(_user_id uuid)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.account_status where user_id = _user_id)
+$$;
+revoke all on function public.is_deactivated(uuid) from public;
+grant execute on function public.is_deactivated(uuid) to anon, authenticated;
+
+drop policy if exists "Anyone can read published wins" on public.wins;
+create policy "Anyone can read published wins" on public.wins for select to anon, authenticated
+  using (status = 'published' and (user_id is null or not public.is_deactivated(user_id)));
+
+-- 6.3 Permanent deletion: done by the app server (service role) in this order:
+--   favorites (user_id) → wins (user_id; others' favorites cascade via
+--   favorites.win_id FK) → account_status → auth user.
+-- No extra SQL required. Optional safety net for leftovers if an auth user is
+-- ever deleted another way:
+-- delete from public.favorites f where not exists (select 1 from auth.users u where u.id = f.user_id);
+
+-- Validation (read only):
+-- select column_name from information_schema.columns where table_name='wins';
+-- select policyname, cmd, qual, with_check from pg_policies where tablename in ('wins','account_status');
+-- After a deletion:  select count(*) from public.wins where user_id = '<id>';      -- 0
+--                    select count(*) from public.favorites where user_id = '<id>'; -- 0
+--                    select count(*) from auth.users where id = '<id>';            -- 0
+-- Rollback 6.2 read policy: recreate the Sprint 4 policy (status = 'published').

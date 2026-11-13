@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { useAnonymousIdentity } from "@/lib/anon-identity";
+import { useAuth } from "@/lib/auth";
 import { addFavorite, fetchMyFavorites, removeFavorite } from "@/lib/favorites-api";
 
 type Ctx = {
@@ -14,7 +14,7 @@ type Ctx = {
 const FavoritesContext = createContext<Ctx | null>(null);
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-  const userId = useAnonymousIdentity();
+  const { userId } = useAuth();
   const [ids, setIds] = useState<Set<string>>(new Set());
 
   // Restore favorites for this identity after every reload / identity change.

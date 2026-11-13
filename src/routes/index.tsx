@@ -7,6 +7,9 @@ import { containsUrl } from "@/lib/url-detect";
 import { MAX_WIN_LENGTH, createWin, fetchWins, isValidWin, type DbWin } from "@/lib/wins-api";
 import { ThemeProvider, useTheme } from "@/lib/theme";
 import { FavoritesProvider, useFavorites } from "@/lib/favorites";
+import { AuthProvider, useAuth } from "@/lib/auth";
+import { isDeactivated } from "@/lib/account-api";
+import { AccountDialog, type AccountView } from "@/components/AccountDialog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,9 +31,11 @@ export const Route = createFileRoute("/")({
   component: () => (
     <ThemeProvider>
       <I18nProvider>
-        <FavoritesProvider>
-          <LittleWins />
-        </FavoritesProvider>
+        <AuthProvider>
+          <FavoritesProvider>
+            <LittleWins />
+          </FavoritesProvider>
+        </AuthProvider>
       </I18nProvider>
     </ThemeProvider>
   ),
@@ -326,8 +331,37 @@ function ThemeToggle() {
   );
 }
 
+function AccountLink({ onOpen }: { onOpen: () => void }) {
+  const { lang } = useI18n();
+  const { isPermanent } = useAuth();
+  const label = isPermanent ? (lang === "fr" ? "Mon compte" : "My account") : lang === "fr" ? "Compte" : "Account";
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      onClick={onOpen}
+      className="h-6 rounded-none px-1.5 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:bg-muted hover:text-ink focus-visible:ring-1 focus-visible:ring-ring"
+    >
+      {label}
+    </Button>
+  );
+}
+
 function LittleWins() {
   const { lang, t } = useI18n();
+  const auth = useAuth();
+  const [accountView, setAccountView] = useState<AccountView | null>(null);
+  // Returning to a deactivated account: offer reactivation (Sprint 6).
+  useEffect(() => {
+    if (!auth.isPermanent || !auth.userId) return;
+    let active = true;
+    isDeactivated(auth.userId).then((off) => {
+      if (active && off) setAccountView("reactivate");
+    });
+    return () => {
+      active = false;
+    };
+  }, [auth.isPermanent, auth.userId]);
   // Sprint 5A/5B: anonymous identity is resolved silently by FavoritesProvider.
   const [wins, setWins] = useState<DbWin[]>([]);
   const [open, setOpen] = useState(false);
@@ -450,6 +484,7 @@ function LittleWins() {
           <div className="flex items-center gap-3">
             <LangSwitch />
             <ThemeToggle />
+            <AccountLink onOpen={() => setAccountView(auth.isPermanent ? "dashboard" : "menu")} />
           </div>
           <p className="text-[10px] text-muted-foreground">{t.footer}</p>
         </div>
@@ -461,6 +496,9 @@ function LittleWins() {
       >
         {t.cta}
       </Button>
+      {accountView ? (
+        <AccountDialog view={accountView} setView={setAccountView} onClose={() => setAccountView(null)} />
+      ) : null}
       <SubmitDialog open={open} onClose={() => setOpen(false)} onSubmit={addWin} />
     </div>
   );

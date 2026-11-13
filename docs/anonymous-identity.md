@@ -53,3 +53,34 @@ the current identity on every visit; there is no local copy. When an anonymous
 identity is later linked to a permanent account, Supabase keeps the same user
 id, so favorites follow without migration. SQL lives in `queries.sql`
 (run manually). Until anonymous sign-ins are enabled, the heart stays inert.
+
+## Permanent accounts (Sprint 6)
+
+> You can have an account without having an identity here.
+
+- **Why an anonymous identity:** so your hearts (and, once `queries.sql` 6.1 is
+  run, your wins) belong to the same invisible id across visits.
+- **Why an account is optional:** it only adds continuity across browsers and
+  devices plus control over your data. The wall works without it.
+- **Conversion keeps the same id:** "Create my account" (footer → Account)
+  attaches an email + password to the *current* anonymous user with Supabase's
+  official linking (`updateUser`). No new user, no copy. A verification email
+  is sent. If the email already belongs to an account, Supabase refuses and
+  nothing is created or changed; the user is invited to sign in.
+- **CAPTCHA:** Cloudflare Turnstile, verified by the app server before the
+  conversion. (Auth's built-in CAPTCHA would also block the silent anonymous
+  sign-in, so it stays off.)
+- **What can be linked to an account:** your email (private), your hearts, your
+  wins written after 6.1. Nothing else.
+- **What others see:** wins only, never an email, name or owner.
+- **Browser data cleared before creating an account:** the anonymous identity
+  and its hearts are lost for you (wins stay on the wall, unowned).
+- **Another device:** signing in makes the permanent account the source of
+  truth. The device's temporary anonymous identity is *not* merged; its hearts
+  stay with that abandoned identity. Signing out gives a fresh anonymous visitor.
+- **Deactivate vs delete:** deactivation is reversible — data kept, your wins
+  hidden from the wall, you're signed out; on next sign-in you're asked to
+  reactivate (or delete). Deletion is permanent: account, your wins, your hearts
+  and your account status row are erased; others' hearts on your wins go too.
+- **Wins written before 6.1** have no owner and cannot be hidden or deleted
+  with an account.
