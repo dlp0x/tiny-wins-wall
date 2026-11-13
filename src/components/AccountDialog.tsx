@@ -422,7 +422,7 @@ export function AccountDialog({
       aria-label={s.account}
       onClick={() => closeable && !busy && onClose()}
     >
-      <div className="animate-pop w-full max-w-md border border-line bg-surface p-7 sm:p-10" onClick={(e) => e.stopPropagation()}>
+      <div className="animate-pop max-h-[calc(100vh-2.5rem)] max-h-[calc(100dvh-2.5rem)] w-full max-w-md overflow-y-auto overscroll-contain border border-line bg-surface p-7 sm:p-10" onClick={(e) => e.stopPropagation()}>
         {body}
         {notice ? <p role="status" className="text-sm leading-relaxed text-muted-foreground">{notice}</p> : null}
         {error ? (
