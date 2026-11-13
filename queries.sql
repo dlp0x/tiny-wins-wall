@@ -200,7 +200,7 @@ returns void
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $function$
 begin
   if auth.role() is distinct from 'service_role' then
     raise exception 'service_role_required';
@@ -211,7 +211,7 @@ begin
   delete from public.account_status where user_id = _user_id;
   delete from auth.users where id = _user_id;
 end;
-$;
+$function$;
 
 revoke all on function public.delete_account_data(uuid) from public, anon, authenticated;
 grant execute on function public.delete_account_data(uuid) to service_role;
