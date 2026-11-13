@@ -38,23 +38,15 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
     if (claims.is_anonymous) throw new Error("Forbidden");
     const userId = context.userId;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const admin = supabaseAdmin as unknown as { from: (t: string) => any; auth: typeof supabaseAdmin.auth };
+    const admin = supabaseAdmin as unknown as {
+      rpc: (fn: string, args: Record<string, string>) => Promise<{ error: unknown | null }>;
+    };
 
-    const steps: [string, string][] = [
-      ["favorites", "user_id"],
-      ["wins", "user_id"], // other people's favorites on these wins cascade
-      ["account_status", "user_id"],
-    ];
-    for (const [table, col] of steps) {
-      const { error } = await admin.from(table).delete().eq(col, userId);
-      if (error) {
-        console.error(`littlewins: delete ${table} failed`, error);
-        return { ok: false };
-      }
-    }
-    const { error } = await admin.auth.admin.deleteUser(userId);
+    // A single SECURITY DEFINER RPC keeps every deletion in one PostgreSQL
+    // transaction. If any step fails, the whole operation is rolled back.
+    const { error } = await admin.rpc("delete_account_data", { _user_id: userId });
     if (error) {
-      console.error("littlewins: delete auth user failed", error);
+      console.error("littlewins: atomic account deletion failed", error);
       return { ok: false };
     }
     return { ok: true };
